@@ -1,0 +1,9 @@
+#System
+.env
+.DS_Store
+
+#Python
+__pycache__/
+
+#Google Oauth
+secrets/
