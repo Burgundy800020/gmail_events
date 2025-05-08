@@ -1,17 +1,50 @@
-# This is a sample Python script.
+import argparse, time
+import json
 
-# Press ⌃F5 to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-import string
+import dotenv
+from gmail import (init_gmail, get_latest_emails,unpack_gmail_message,
+                    decode_messages
+                   )
+from gpt import init_openai, get_events
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+dotenv.load_dotenv()
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-t','--token')
+parser.add_argument('-o','--output')
+args = parser.parse_args()
+
+gmail_service = init_gmail(args.token)
+openai_client = init_openai()
+
+def fetch_events():
+    emails = get_latest_emails(gmail_service)
+    messages = decode_messages(emails)
+    return get_events(openai_client, messages)
+
+def write_events(events):
+    for event in events:
+        if event.get('name', ''):
+            with open(args.output, 'a') as f:
+                f.write(json.dumps(event)+'\n')
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-#b
-#c
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+FREQ = 60
+
+while True:
+    events = fetch_events()
+    write_events(events)
+    time.sleep(FREQ)
+
+
+
+
+
+
+
+
+
+
+
+
+
