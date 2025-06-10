@@ -3,6 +3,7 @@ import json
 from typing import List
 
 import dotenv
+dotenv.load_dotenv()
 
 from gmail import (init_gmail, get_latest_emails,unpack_gmail_message,
                     decode_messages
@@ -10,7 +11,6 @@ from gmail import (init_gmail, get_latest_emails,unpack_gmail_message,
 from gpt import init_openai, get_events, Event
 from database import create_event
 
-dotenv.load_dotenv()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-t','--token')

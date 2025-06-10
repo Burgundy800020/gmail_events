@@ -6,9 +6,6 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import declarative_base, sessionmaker
 Base = declarative_base()
 
-from dotenv import load_dotenv
-load_dotenv()
-
 from gpt import Event as gptEvent
 
 class Event(Base):
@@ -18,6 +15,8 @@ class Event(Base):
     datetime = Column(DateTime, nullable=False)
     location = Column(String, nullable=False)
     items_to_bring = Column(JSON, ARRAY(String), nullable=False)
+
+
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 ENGINE = create_engine(DATABASE_URL)
