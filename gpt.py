@@ -1,8 +1,9 @@
-import openai
-from openai import OpenAI
 import os, json
-from pydantic import BaseModel
 from datetime import datetime
+from typing import List
+
+from openai import OpenAI
+from pydantic import BaseModel
 
 def init_openai():
     return OpenAI(api_key=os.environ['OPEN_AI'])
@@ -19,7 +20,7 @@ PROMPT = ("You will be given an email body. Extract the event information. "
           f"and the current time is {datetime.now().strftime('%I:%M %p')}."
           )
 
-def get_events(client : openai.OpenAI, messages):
+def get_events(client : OpenAI, messages)->List[Event]:
     responses = []
     for message in messages:
         response = client.responses.parse(
@@ -33,7 +34,7 @@ def get_events(client : openai.OpenAI, messages):
             ],
             text_format=Event
         )
-        responses.append(response.output_parsed.model_dump(mode='json'))
+        responses.append(response.output_parsed)
     return responses
 
 

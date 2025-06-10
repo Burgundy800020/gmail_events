@@ -1,11 +1,14 @@
 import argparse, time
 import json
+from typing import List
 
 import dotenv
+
 from gmail import (init_gmail, get_latest_emails,unpack_gmail_message,
                     decode_messages
                    )
-from gpt import init_openai, get_events
+from gpt import init_openai, get_events, Event
+from database import create_event
 
 dotenv.load_dotenv()
 
@@ -23,12 +26,14 @@ def fetch_events():
     messages = decode_messages(emails)
     return get_events(openai_client, messages)
 
-def write_events(events):
+def write_events(events:List[Event]):
     for event in events:
-        if args.debug: print(event.get('datetime'))
-        if event.get('name', ''):
-            with open(args.output, 'a') as f:
-                f.write(json.dumps(event)+'\n')
+        if args.debug: print(event.datetime)
+        if event.name:
+            if args.output:
+                with open(args.output, 'a') as f:
+                    f.write(event.model_dump_json()+'\n')
+            create_event(event)
 
 
 FREQ = 60 if not args.debug else 15
