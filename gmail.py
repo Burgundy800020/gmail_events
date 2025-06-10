@@ -1,9 +1,12 @@
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
 import base64
 import time
-
 START_STAMP =  time.time_ns() // 1_000_000
+import sys
+DEBUG = '-d' in sys.argv
+
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+
 
 def init_gmail(token_path):
     creds = Credentials.from_authorized_user_file(token_path,
@@ -13,7 +16,7 @@ def init_gmail(token_path):
     return build('gmail', 'v1', credentials=creds)
 
 
-def get_latest_emails(service, debug=False):
+def get_latest_emails(service, alltime=False):
     """
     Returns a list of email messages dating later than START_STAMP
     :param service: the gmail service object
@@ -33,13 +36,16 @@ def get_latest_emails(service, debug=False):
 
     # get the actual messages from ids
     global START_STAMP
+    flag = False
     for message in message_ids:
         msg = service.users().messages().get(userId='me', id=message['id']).execute()
         internalDate = msg.get('internalDate', '')
         if internalDate:
-            if int(internalDate) >= START_STAMP or debug:
+            if int(internalDate) >= START_STAMP or alltime:
+                if DEBUG: print("get_latest_emails: found msg")
+                flag=True
                 messages.append(msg)
-    START_STAMP = time.time_ns() // 1_000_000
+    if flag: START_STAMP = time.time_ns() // 1_000_000
     return messages
 
 

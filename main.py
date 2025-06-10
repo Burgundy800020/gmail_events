@@ -16,19 +16,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-t','--token')
 parser.add_argument('-o','--output')
 parser.add_argument('-d','--debug', action='store_true')
+parser.add_argument('--alltime', action='store_true')
 args = parser.parse_args()
 
 gmail_service = init_gmail(args.token)
 openai_client = init_openai()
 
 def fetch_events():
-    emails = get_latest_emails(gmail_service, debug=args.debug)
+    emails = get_latest_emails(gmail_service, alltime=args.alltime)
     messages = decode_messages(emails)
     return get_events(openai_client, messages)
 
 def write_events(events:List[Event]):
     for event in events:
-        if args.debug: print(event.datetime)
         if event.name:
             if args.output:
                 with open(args.output, 'a') as f:

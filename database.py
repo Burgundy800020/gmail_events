@@ -1,4 +1,5 @@
-import os
+import os, sys
+DEBUG = '-d' in sys.argv
 
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -18,13 +19,13 @@ class Event(Base):
     location = Column(String, nullable=False)
     items_to_bring = Column(JSON, ARRAY(String), nullable=False)
 
-print(Base.metadata)
-
 DATABASE_URL = os.environ.get('DATABASE_URL')
 ENGINE = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=ENGINE)
 session = Session()
 Base.metadata.create_all(ENGINE)
+
+
 
 
 def gpt2sql(event: gptEvent)->Event:
@@ -38,6 +39,7 @@ def create_event(event:gptEvent):
     :return: None
     Creates event to database
     """
+    if DEBUG:print(f"create_event {event}")
     session.add(gpt2sql(event))
     session.commit()
 
