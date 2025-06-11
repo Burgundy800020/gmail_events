@@ -6,6 +6,9 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import declarative_base, sessionmaker
 Base = declarative_base()
 
+import structlog
+logger = structlog.get_logger(__name__)
+
 from gpt import Event as gptEvent
 
 class Event(Base):
@@ -38,8 +41,13 @@ def create_event(event:gptEvent):
     :return: None
     Creates event to database
     """
-    if DEBUG:print(f"create_event {event}")
-    session.add(gpt2sql(event))
-    session.commit()
+    logger.info("creating_event", name=event.name)
+    try:
+        session.add(gpt2sql(event))
+        session.commit()
+        logger.info("created_event", name=event.name)
+    except Exception as e:
+        logger.error("create_event_failed", name=event.name, error=str(e))
+        session.rollback()
 
 

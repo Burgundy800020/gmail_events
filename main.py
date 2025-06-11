@@ -5,6 +5,18 @@ from typing import List
 import dotenv
 dotenv.load_dotenv()
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+import structlog
+structlog.configure(
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    processors=[
+        structlog.processors.KeyValueRenderer()
+    ]
+)
+logger = structlog.get_logger(__name__)
+
+
 from gmail import (init_gmail, get_latest_emails,unpack_gmail_message,
                     decode_messages
                    )
