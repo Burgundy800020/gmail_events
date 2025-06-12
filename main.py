@@ -1,59 +1,52 @@
-import argparse, time
-import json
+import time
 from typing import List
 
-import dotenv
-dotenv.load_dotenv()
-
-import logging
-logging.basicConfig(level=logging.DEBUG)
-import structlog
-structlog.configure(
-    logger_factory=structlog.stdlib.LoggerFactory(),
-    processors=[
-        structlog.processors.KeyValueRenderer()
-    ]
-)
-logger = structlog.get_logger(__name__)
-
-
-from gmail import (init_gmail, get_latest_emails,unpack_gmail_message,
-                    decode_messages
-                   )
+from config import settings
+from structlog import get_logger
+logger = get_logger(__name__)
+from gmail import init_gmail, get_latest_emails, decode_messages
 from gpt import init_openai, get_events, Event
 from database import create_event
 
+def init_services():
+    """Initialize all required services"""
+    if not settings.token:
+        raise ValueError("GMAIL_TOKEN_PATH must be set in environment or .env file")
+    
+    gmail_service = init_gmail(settings.token)
+    openai_client = init_openai()
+    return gmail_service, openai_client
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-t','--token')
-parser.add_argument('-o','--output')
-parser.add_argument('-d','--debug', action='store_true')
-parser.add_argument('--alltime', action='store_true')
-args = parser.parse_args()
-
-gmail_service = init_gmail(args.token)
-openai_client = init_openai()
-
-def fetch_events():
-    emails = get_latest_emails(gmail_service, alltime=args.alltime)
+def fetch_events(gmail_service, openai_client):
+    """Fetch and process events from emails"""
+    emails = get_latest_emails(gmail_service)
     messages = decode_messages(emails)
     return get_events(openai_client, messages)
 
-def write_events(events:List[Event]):
+def write_events(events: List[Event]):
+    """Write events to output file and database"""
     for event in events:
         if event.name:
-            if args.output:
-                with open(args.output, 'a') as f:
+            if settings.output:
+                with open(settings.output, 'a') as f:
                     f.write(event.model_dump_json()+'\n')
             create_event(event)
 
+def main():
+    logger.info("starting_application", debug=settings.debug)
+    gmail_service, openai_client = init_services()
+    
+    while True:
+        try:
+            events = fetch_events(gmail_service, openai_client)
+            write_events(events)
+            time.sleep(settings.POLLING_INTERVAL)
+        except Exception as e:
+            logger.error("main_loop_error", error=str(e))
+            time.sleep(settings.POLLING_INTERVAL)  # Still wait before retrying
 
-FREQ = 60 if not args.debug else 15
-
-while True:
-    events = fetch_events()
-    write_events(events)
-    time.sleep(FREQ)
+if __name__ == "__main__":
+    main()
 
 
 
