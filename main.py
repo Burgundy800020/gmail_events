@@ -33,7 +33,7 @@ def write_events(events: List[Event]):
             create_event(event)
 
 def main():
-    logger.info("starting_application", debug=settings.debug)
+    logger.info("starting_application", mode=settings.mode)
     gmail_service, openai_client = init_services()
     
     while True:

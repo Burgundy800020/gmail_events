@@ -22,6 +22,8 @@ ENGINE = create_engine(settings.DATABASE_URL)
 Session = sessionmaker(bind=ENGINE)
 session = Session()
 Base.metadata.create_all(ENGINE)
+#Google oauth
+# GMAIL_TOKEN_PATH=secrets/token_jj.json
 
 def gpt2sql(event: gptEvent) -> Event:
     return Event(
@@ -39,7 +41,10 @@ def create_event(event: gptEvent):
     """
     logger.info("creating_event", name=event.name)
     try:
-        session.add(gpt2sql(event))
+        sqlevent = gpt2sql(event)
+        logger.info("sqlevent", time=sqlevent.datetime.strftime('%I:%M %p'),
+                    tz=sqlevent.datetime.tzinfo)
+        session.add(sqlevent)
         session.commit()
         logger.info("created_event", name=event.name)
     except Exception as e:
