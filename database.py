@@ -1,6 +1,10 @@
+from datetime import datetime as dt
+from typing import List
+
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import declarative_base, sessionmaker
+
 from config import settings
 from structlog import get_logger
 logger = get_logger(__name__)
@@ -33,6 +37,14 @@ def gpt2sql(event: gptEvent) -> Event:
         items_to_bring=event.items_to_bring
     )
 
+def sql2gpt(event: Event) -> gptEvent:
+    return gptEvent(
+        name=event.name,
+        datetime=event.datetime,
+        location=event.location,
+        items_to_bring=event.items_to_bring
+    )
+
 def create_event(event: gptEvent):
     """
     Creates event in database
@@ -51,5 +63,13 @@ def create_event(event: gptEvent):
         logger.error("create_event_failed", name=event.name, error=str(e))
         session.rollback()
         raise
+
+def select_events_between(start_dt: dt, end_dt: dt) -> List[gptEvent]:
+    """
+    Fetch events from the database between start_dt and end_dt (inclusive).
+    Returns a list of gpt.Event (Pydantic models).
+    """
+    results = session.query(Event).filter(Event.datetime >= start_dt, Event.datetime <= end_dt).all()
+    return [sql2gpt(e) for e in results]
 
 

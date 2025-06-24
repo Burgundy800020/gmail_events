@@ -17,7 +17,7 @@ class Event(BaseModel):
     items_to_bring: list[str]
 
 
-def get_events(client: OpenAI, messages) -> List[Event]:
+def extract_events(client: OpenAI, messages) -> List[Event]:
     if not messages: return []
     local_time = dt.now().astimezone()
     PROMPT = ("You will be given an email body. Extract the event information. "

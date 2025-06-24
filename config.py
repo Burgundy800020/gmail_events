@@ -19,8 +19,11 @@ class Settings(BaseSettings):
     POLLING_INTERVAL: int = Field(60, description="Interval in seconds between email checks")
     output: Optional[str] = Field(None, description="Path to output file for events")
     ALL_TIME: bool = Field(False, description="Process all emails instead of just new ones")
-    
-    
+
+    # Server Gateway settings
+    HOST : str = Field('0.0.0.0', description="Host to connect to")
+    PORT : int = Field(8000, description="Port to listen on")
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
