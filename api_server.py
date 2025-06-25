@@ -13,7 +13,14 @@ from database import select_events_between
 from gpt import Event
 from utils import init_services, fetch_events, write_events
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    gmail_service, openai_client = init_services()
+    task = asyncio.create_task(background_polling(gmail_service, openai_client))
+    yield
+    task.cancel()
+app = FastAPI(lifespan=lifespan)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -32,15 +39,6 @@ async def background_polling(gmail_service, openai_client):
         except Exception as e:
             logger.error("main_loop_error", error=str(e))
             await asyncio.sleep(settings.POLLING_INTERVAL)
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    gmail_service, openai_client = init_services()
-    task = asyncio.create_task(background_polling(gmail_service, openai_client))
-    yield
-    task.cancel()
-
-app.router.lifespan_context = lifespan
 
 
 @app.get("/events", response_model=List[Event])
