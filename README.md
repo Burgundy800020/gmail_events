@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Automatic Event Extraction:** Uses OpenAI's GPT models to understand and extract event details (title, date, time, location, items to bring) from your emails.
 - **Gmail Integration:** Securely connects to your Gmail account using OAuth2.
@@ -15,7 +15,7 @@
 
 ---
 
-## 🛠️ Technologies Used
+## Requirements
 
 - **Python 3.12+**
 - **FastAPI** – High-performance web API framework
@@ -29,7 +29,7 @@
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ### 1. Clone the Repository
 
@@ -50,7 +50,7 @@ conda activate gmail_events
 ### 3. Configure Secrets
 
 - Place your Gmail OAuth credentials in `secrets/credentials.json`.
-- Generate a Gmail OAuth token using the provided Jupyter notebook (`get_oauth_token.ipynb`) or your preferred method. Save the token as `secrets/token.json`.
+- Generate a Gmail OAuth token using the your preferred method. Save the token as `secrets/token.json`.
 - Set your OpenAI API key in a `.env` file or as an environment variable (`OPENAI_API_KEY`).
 
 ### 4. Configure Database
@@ -68,62 +68,55 @@ DATABASE_URL=postgresql://user:password@localhost:5432/yourdb
 Extract events and save to a file:
 
 ```bash
-python main.py --token secrets/token.json --output output/jiangjiang.jsonl
+python main.py --token secrets/token.json 
 ```
 
-#### As an API Server
-
-Start the FastAPI server:
-
-```bash
-python main.py
-```
-
-The API will be available at `http://localhost:8000`.
-
+The API server will be running at the configured origin.
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 You can customize the behavior via environment variables or a `.env` file:
 
 - `DATABASE_URL` – PostgreSQL connection string
 - `OPENAI_API_KEY` – Your OpenAI API key
 - `GMAIL_TOKEN_PATH` – Path to your Gmail OAuth token
+- `HOST` - Host on which the http server will be running
+- `PORT` - Port on which the http server will be running
 - `OUTPUT` – Output file for events
 - `POLLING_INTERVAL` – How often to check for new emails (in seconds)
 - `ALL_TIME` – If true, processes all emails, not just new ones
 
 ---
 
-## 📂 Output Example
+## Output Example
 
 Each extracted event is saved as a JSON object:
 
 ```json
 {
   "name": "Movie night out",
-  "datetime": "2025-06-10T00:00:00Z",
-  "location": "Squirrel Hill Theatre",
+  "datetime": "2025-06-10T18:00:00Z",
+  "location": "Manor Theatre",
   "items_to_bring": ["theatre coupons"]
 }
 ```
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions, issues, and feature requests are welcome! Please open an issue or submit a pull request.
 
 ---
 
-## 📄 License
+## License
 
 MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-## ✨ Acknowledgements
+## Acknowledgements
 
 - [OpenAI](https://openai.com/)
 - [Google Cloud](https://cloud.google.com/)
