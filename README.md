@@ -1,6 +1,6 @@
 # Gmail Events
 
-**Gmail Events** is an intelligent automation tool that scans your Gmail inbox, extracts event information from your emails using advanced AI, and seamlessly populates your calendar or exports structured event data. Never miss an important meeting, appointment, or social event buried in your inbox again!
+**Gmail Events** is an intelligent automation tool that scans your Gmail inbox, extracts event information from your emails (powered by a LLM), and seamlessly populates your calendar or exports structured event data. Never miss an important meeting, appointment, or social event buried in your inbox again!
 
 ---
 
@@ -8,7 +8,7 @@
 
 - **Automatic Event Extraction:** Uses OpenAI's GPT models to understand and extract event details (title, date, time, location, items to bring) from your emails.
 - **Gmail Integration:** Securely connects to your Gmail account using OAuth2.
-- **Structured Output:** Saves events in a machine-readable format (JSONL) for easy import into calendars or other tools.
+- **Structured Output:** Saves events in a jsonl format for easy import into calendars or other tools.
 - **API Server:** Built-in FastAPI server for real-time event access and integration.
 - **Database Support:** Stores events in a PostgreSQL database for persistence and querying.
 - **Customizable & Extensible:** Easily adapt polling intervals, output formats, and more.
@@ -112,7 +112,7 @@ Contributions, issues, and feature requests are welcome! Please open an issue or
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT License.
 
 ---
 
