@@ -29,7 +29,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 async def background_polling(gmail_service, openai_client):
     while True:
         try:
