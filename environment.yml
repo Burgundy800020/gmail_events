@@ -118,7 +118,12 @@ dependencies:
       - beautifulsoup4==4.13.4
       - cachetools==5.5.2
       - charset-normalizer==3.4.1
+      - click==8.2.1
+      - dnspython==2.7.0
       - dotenv==0.9.9
+      - email-validator==2.2.0
+      - fastapi==0.115.13
+      - fastapi-cli==0.0.7
       - google==3.0.0
       - google-api-core==2.24.2
       - google-api-python-client==2.168.0
@@ -127,19 +132,37 @@ dependencies:
       - google-auth-oauthlib==1.2.2
       - googleapis-common-protos==1.70.0
       - httplib2==0.22.0
+      - httptools==0.6.4
       - idna==3.10
+      - markdown-it-py==3.0.0
+      - mdurl==0.1.2
       - oauthlib==3.2.2
       - openai==1.84.0
       - proto-plus==1.26.1
       - protobuf==6.30.2
+      - psycopg2-binary==2.9.10
       - pyasn1==0.6.1
       - pyasn1-modules==0.4.2
+      - pydantic-settings==2.9.1
       - pyparsing==3.2.3
       - python-dotenv==1.1.0
+      - python-multipart==0.0.20
       - requests-oauthlib==2.0.0
+      - rich==14.0.0
+      - rich-toolkit==0.14.7
       - rsa==4.9.1
+      - shellingham==1.5.4
       - soupsieve==2.7
+      - sqlalchemy==2.0.41
+      - starlette==0.46.2
+      - structlog==25.4.0
+      - typer==0.16.0
       - typing-extensions==4.13.2
+      - typing-inspection==0.4.1
       - uritemplate==4.1.1
       - urllib3==2.4.0
+      - uvicorn==0.34.3
+      - uvloop==0.21.0
+      - watchfiles==1.1.0
+      - websockets==15.0.1
 prefix: /opt/anaconda3/envs/gmail_events
