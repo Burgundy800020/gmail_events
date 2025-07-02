@@ -58,7 +58,7 @@ conda activate gmail_events
 Set your PostgreSQL connection string in a `.env` file:
 
 ```
-DATABASE_URL=postgresql://user:password@localhost:5432/yourdb
+DATABASE_URL=postgresql://user:password@host:port/yourdb
 ```
 
 ### 5. Run the Application
